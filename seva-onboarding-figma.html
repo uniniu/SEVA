@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEVA - Onboarding Flow (From Figma)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        /* View Controls */
+        .view-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 12px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .view-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            background: #e0e0e0;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .view-button.active {
+            background: #304FFE;
+            color: white;
+        }
+
+        .view-button:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Gallery Mode */
+        .gallery-mode {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 80px 20px 20px;
+        }
+
+        .prototype-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1800px;
+        }
+
+        /* Prototype Mode */
+        .prototype-mode {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 80px 20px 20px;
+        }
+
+        .prototype-navigation {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: #304FFE;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #1E3DD9;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .screen-counter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Phone Frame */
+        .phone-frame {
+            width: 360px;
+            height: 640px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .phone-frame.hidden {
+            display: none;
+        }
+
+        .screen-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 24px;
+            background: #000;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 8px;
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* App Bar */
+        .app-bar {
+            background: #304FFE;
+            color: white;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .app-bar .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            cursor: pointer;
+        }
+
+        .app-bar .menu-icon span {
+            height: 2px;
+            background: white;
+            display: block;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            height: 48px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .nav-icon img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        /* Intro Screen */
+        .intro-screen {
+            background: #536DFE;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .seva-logo {
+            margin-bottom: 80px;
+        }
+        
+        .seva-logo img {
+            width: 176px;
+            height: auto;
+        }
+
+        .intro-tagline {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 60px;
+            line-height: 1.4;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        .button-primary {
+            width: 100%;
+            max-width: 238px;
+            height: 48px;
+            background: #1DE9B6;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .button-primary:hover {
+            background: #1BCEA0;
+            box-shadow: 0 4px 8px rgba(29, 233, 182, 0.3);
+        }
+
+        .button-secondary {
+            width: 100%;
+            max-width: 238px;
+            height: 48px;
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .button-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Language Grid */
+        .language-screen {
+            padding: 24px;
+            background: #f5f5f5;
+            height: 100%;
+        }
+
+        .language-header {
+            background: #536DFE;
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+            margin: -24px -24px 24px;
+        }
+
+        .language-header h2 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            letter-spacing: 0.5px;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .language-tile {
+            background: #1DE9B6;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 20px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+
+        .language-tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .language-tile.selected {
+            background: #304FFE;
+            color: white;
+        }
+
+        .language-native {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .language-english {
+            font-size: 12px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Confirmation Modal */
+        .confirmation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 280px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .confirmation-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .confirmation-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+
+        .icon-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.2s;
+        }
+
+        .icon-button.decline {
+            background: #EE1A0F;
+            color: white;
+        }
+
+        .icon-button.accept {
+            background: #1DE9B6;
+            color: white;
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Audio Test Screen */
+        .audio-test-screen {
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .audio-instruction {
+            font-size: 16px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 60px;
+            line-height: 1.6;
+        }
+
+        .audio-button-container {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #536DFE;
+            opacity: 0.1;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        .pulse-ring:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .pulse-ring:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .audio-button-main {
+            position: relative;
+            z-index: 10;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #1DE9B6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+        }
+
+        .audio-button-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(29, 233, 182, 0.4);
+        }
+
+        .floating-audio-button {
+            position: absolute;
+            bottom: 80px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1DE9B6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+
+        .floating-audio-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .view-controls {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .view-button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .gallery-mode {
+                padding: 60px 10px 10px;
+            }
+
+            .prototype-container {
+                gap: 20px;
+            }
+
+            .gallery-mode .phone-frame {
+                transform: scale(0.85);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="view-controls">
+        <button class="view-button active" onclick="setView('gallery')">Gallery View</button>
+        <button class="view-button" onclick="setView('prototype')">Prototype Mode</button>
+    </div>
+
+    <!-- Gallery Mode -->
+    <div class="gallery-mode" id="galleryView">
+        <div class="prototype-container">
+            
+            <!-- Screen 1: Intro -->
+            <div class="phone-frame" data-screen="1">
+                <span class="screen-label">1. Intro Screen</span>
+                <div class="status-bar">
+                    <span>12:30</span>
+                </div>
+                <div class="intro-screen">
+                    <div class="seva-logo">
+                        <svg width="176" height="40" viewBox="0 0 176 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <text x="0" y="32" font-family="Roboto" font-size="36" font-weight="300" fill="white" letter-spacing="8">seva</text>
+                        </svg>
+                    </div>
+                    <div class="intro-tagline">Connecting users to<br>sanitation service.</div>
+                    <button class="button-primary">GET STARTED</button>
+                    <button class="button-secondary">LOG IN</button>
+                </div>
+                <div class="nav-bar">
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/back.png" alt="Back">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/home.png" alt="Home">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/recent.png" alt="Recent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Language Choice (Audio) -->
+            <div class="phone-frame" data-screen="2">
+                <span class="screen-label">2. Audio Language Selection</span>
+                <div class="status-bar">
+                    <span>12:30</span>
+                </div>
+                <div class="app-bar">
+                    <div class="menu-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    Set audio language 🔊
+                </div>
+                <div class="content">
+                    <div class="language-screen">
+                        <div class="language-header">
+                            <h2>What language do you want to hear aloud for help?</h2>
+                        </div>
+                        <div class="language-grid">
+                            <button class="language-tile selected">
+                                <div class="language-native">हिन्दी</div>
+                                <div class="language-english">Hindi</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">English</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">বাংলা</div>
+                                <div class="language-english">Bengali</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">తెలుగు</div>
+                                <div class="language-english">Telugu</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">मराठी</div>
+                                <div class="language-english">Marathi</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">தமிழ்</div>
+                                <div class="language-english">Tamil</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">اردو</div>
+                                <div class="language-english">Urdu</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">ಕನ್ನಡ</div>
+                                <div class="language-english">Kannada</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">ગુજરાતી</div>
+                                <div class="language-english">Gujarati</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">ଓଡ଼ିଆ</div>
+                                <div class="language-english">Odia</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">മലയാളം</div>
+                                <div class="language-english">Malayalam</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">संस्कृतम्</div>
+                                <div class="language-english">Sanskrit</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/back.png" alt="Back">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/home.png" alt="Home">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/recent.png" alt="Recent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 3: Audio Confirmation -->
+            <div class="phone-frame" data-screen="3">
+                <span class="screen-label">3. Confirm Audio Language</span>
+                <div class="status-bar">
+                    <span>12:30</span>
+                </div>
+                <div class="app-bar">
+                    <div class="menu-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    Set audio language
+                </div>
+                <div class="content">
+                    <div class="language-screen">
+                        <div class="language-grid" style="opacity: 0.3; pointer-events: none;">
+                            <button class="language-tile">
+                                <div class="language-native">हिन्दी</div>
+                                <div class="language-english">Hindi</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">English</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">বাংলা</div>
+                                <div class="language-english">Bengali</div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="confirmation-overlay">
+                        <div class="confirmation-card">
+                            <div class="confirmation-title">
+                                <span>हिन्दी - Hindi 🔊</span>
+                            </div>
+                            <div class="confirmation-text">
+                                ऑडियो भाषा के रूप में "हिन्दी" की पसंद की पुष्टि करना जारी रखें<br><br>
+                                Continue to confirm choice of "Hindi" as the audio language.
+                            </div>
+                            <div class="confirmation-buttons">
+                                <button class="icon-button decline">✕</button>
+                                <button class="icon-button accept">✓</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/back.png" alt="Back">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/home.png" alt="Home">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/recent.png" alt="Recent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 4: Audio Test -->
+            <div class="phone-frame" data-screen="4">
+                <span class="screen-label">4. Test Audio</span>
+                <div class="status-bar">
+                    <span>12:30</span>
+                </div>
+                <div class="app-bar">
+                    <div class="menu-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    Test audio language 🔊
+                </div>
+                <div class="content">
+                    <div class="audio-test-screen">
+                        <div class="audio-instruction">
+                            आप देख रहे पाठ के अनुवाद सुनने के लिए ऑडियो बटन दबाएं।<br><br>
+                            Press the audio button to hear translations of the text you see.
+                        </div>
+                        <div class="audio-button-container">
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <button class="audio-button-main"><img src="/mnt/user-data/uploads/Floating_Sound_Buttonaloud.png" style="width: 24px; height: 24px;"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-bar">
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/back.png" alt="Back">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/home.png" alt="Home">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/recent.png" alt="Recent">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 5: Written Language Selection -->
+            <div class="phone-frame" data-screen="5">
+                <span class="screen-label">5. Written Language Selection</span>
+                <div class="status-bar">
+                    <span>12:30</span>
+                </div>
+                <div class="app-bar">
+                    <div class="menu-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    Set written language
+                </div>
+                <div class="content">
+                    <div class="language-screen">
+                        <div class="language-header">
+                            <h2>What language do you want to read?</h2>
+                        </div>
+                        <div class="language-grid">
+                            <button class="language-tile">
+                                <div class="language-native">हिन्दी</div>
+                                <div class="language-english">Hindi</div>
+                            </button>
+                            <button class="language-tile selected">
+                                <div class="language-native">English</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">বাংলা</div>
+                                <div class="language-english">Bengali</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">తెలుగు</div>
+                                <div class="language-english">Telugu</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">मराठी</div>
+                                <div class="language-english">Marathi</div>
+                            </button>
+                            <button class="language-tile">
+                                <div class="language-native">தமிழ்</div>
+                                <div class="language-english">Tamil</div>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="floating-audio-button"><img src="/mnt/user-data/uploads/Floating_Sound_Buttonaloud.png" style="width: 24px; height: 24px;"></button>
+                </div>
+                <div class="nav-bar">
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/back.png" alt="Back">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/home.png" alt="Home">
+                    </div>
+                    <div class="nav-icon">
+                        <img src="/mnt/user-data/uploads/recent.png" alt="Recent">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Prototype Mode -->
+    <div class="prototype-mode" id="prototypeView">
+        <div class="prototype-viewer">
+            <div class="phone-frame" id="currentScreen">
+                <!-- Screen content will be cloned here -->
+            </div>
+            <div class="prototype-navigation">
+                <button class="nav-btn" id="prevBtn" onclick="previousScreen()">Previous</button>
+                <div class="screen-counter">
+                    <span id="currentScreenNum">1</span> / <span id="totalScreens">5</span>
+                </div>
+                <button class="nav-btn" id="nextBtn" onclick="nextScreen()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScreenIndex = 0;
+        const totalScreens = 5;
+
+        function setView(mode) {
+            const galleryView = document.getElementById('galleryView');
+            const prototypeView = document.getElementById('prototypeView');
+            const buttons = document.querySelectorAll('.view-button');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (mode === 'gallery') {
+                galleryView.style.display = 'flex';
+                prototypeView.style.display = 'none';
+                buttons[0].classList.add('active');
+            } else {
+                galleryView.style.display = 'none';
+                prototypeView.style.display = 'flex';
+                buttons[1].classList.add('active');
+                updatePrototypeScreen();
+            }
+        }
+
+        function updatePrototypeScreen() {
+            const sourceScreen = document.querySelector(`.phone-frame[data-screen="${currentScreenIndex + 1}"]`);
+            const targetScreen = document.getElementById('currentScreen');
+            
+            if (sourceScreen) {
+                targetScreen.innerHTML = sourceScreen.innerHTML;
+                targetScreen.removeAttribute('data-screen');
+            }
+
+            document.getElementById('currentScreenNum').textContent = currentScreenIndex + 1;
+            document.getElementById('totalScreens').textContent = totalScreens;
+
+            document.getElementById('prevBtn').disabled = currentScreenIndex === 0;
+            document.getElementById('nextBtn').disabled = currentScreenIndex === totalScreens - 1;
+        }
+
+        function nextScreen() {
+            if (currentScreenIndex < totalScreens - 1) {
+                currentScreenIndex++;
+                updatePrototypeScreen();
+            }
+        }
+
+        function previousScreen() {
+            if (currentScreenIndex > 0) {
+                currentScreenIndex--;
+                updatePrototypeScreen();
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('prototypeView').style.display === 'flex') {
+                if (e.key === 'ArrowRight') nextScreen();
+                if (e.key === 'ArrowLeft') previousScreen();
+            }
+        });
+
+        // Add interactivity
+        document.querySelectorAll('.language-tile').forEach(tile => {
+            tile.addEventListener('click', function() {
+                this.closest('.language-grid').querySelectorAll('.language-tile').forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.audio-button-main, .floating-audio-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Auto-detect mobile and switch to prototype mode
+        if (window.innerWidth <= 768) {
+            setView('prototype');
+        }
+    </script>
+</body>
+</html>
