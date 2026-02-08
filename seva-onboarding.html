@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEVA - Onboarding Flow</title>
+    <style>
+        @font-face {
+            font-family: 'Noto Sans UI';
+            src: url('/mnt/user-data/uploads/NotoSansUI-Bold.ttf');
+            font-weight: 500;
+        }
+        
+        @font-face {
+            font-family: 'Noto Serif';
+            src: url('/mnt/user-data/uploads/NotoSerif-Regular.ttf');
+            font-weight: 400;
+        }
+        
+        @font-face {
+            font-family: 'Noto Serif';
+            src: url('/mnt/user-data/uploads/NotoSerif-Bold.ttf');
+            font-weight: 700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans UI', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .prototype-container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1800px;
+        }
+
+        .phone-frame {
+            width: 360px;
+            height: 640px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 24px;
+            background: #000;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 8px;
+            color: white;
+            font-size: 11px;
+        }
+
+        /* App Bar */
+        .app-bar {
+            background: #304FFE;
+            color: white;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .app-bar .menu-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+        }
+
+        .app-bar .menu-icon span {
+            height: 2px;
+            background: white;
+            display: block;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Navigation Bar */
+        .nav-bar {
+            height: 48px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 40px;
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Intro Screen */
+        .intro-screen {
+            background: #536DFE;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .seva-logo {
+            margin-bottom: 80px;
+        }
+        
+        .seva-logo img {
+            width: 240px;
+            height: auto;
+        }
+
+        .intro-tagline {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 60px;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .button-primary {
+            width: 100%;
+            max-width: 280px;
+            height: 48px;
+            background: #1DE9B6;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .button-primary:hover {
+            background: #1BCEA0;
+            box-shadow: 0 4px 8px rgba(29, 233, 182, 0.3);
+        }
+
+        .button-secondary {
+            width: 100%;
+            max-width: 280px;
+            height: 48px;
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .button-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Language Grid */
+        .language-screen {
+            padding: 24px;
+            background: #f5f5f5;
+            height: 100%;
+        }
+
+        .language-header {
+            background: #536DFE;
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+            margin: -24px -24px 24px;
+        }
+
+        .language-header h2 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .language-tile {
+            background: #1DE9B6;
+            color: #000;
+            border: none;
+            border-radius: 4px;
+            padding: 20px 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80px;
+        }
+
+        .language-tile:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .language-tile.selected {
+            background: #304FFE;
+            color: white;
+        }
+
+        .language-native {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .language-english {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* Confirmation Modal */
+        .confirmation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            max-width: 320px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .confirmation-title {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .confirmation-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+        }
+
+        .icon-button {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            transition: all 0.2s;
+        }
+
+        .icon-button.decline {
+            background: #EE1A0F;
+            color: white;
+        }
+
+        .icon-button.accept {
+            background: #1DE9B6;
+            color: white;
+        }
+
+        .icon-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Audio Test Screen */
+        .audio-test-screen {
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .audio-instruction {
+            font-size: 16px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 60px;
+            line-height: 1.6;
+        }
+
+        .audio-button-container {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #304FFE;
+            opacity: 0.1;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        .pulse-ring:nth-child(2) {
+            animation-delay: 0.5s;
+        }
+
+        .pulse-ring:nth-child(3) {
+            animation-delay: 1s;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .audio-button-main {
+            position: relative;
+            z-index: 10;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #1DE9B6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(29, 233, 182, 0.3);
+        }
+
+        .audio-button-main:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(29, 233, 182, 0.4);
+        }
+
+        /* How It Works Screens */
+        .how-it-works-screen {
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 24px;
+        }
+
+        .how-it-works-text {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .diagram-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .diagram-container img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .pagination-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+        }
+
+        .dot.active {
+            background: #304FFE;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-header {
+            background: #536DFE;
+            padding: 60px 24px 40px;
+            text-align: center;
+        }
+
+        .login-header .seva-logo {
+            font-size: 48px;
+            margin-bottom: 0;
+        }
+
+        .login-form {
+            flex: 1;
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 48px;
+            border: none;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 8px 0;
+            font-size: 16px;
+            margin-bottom: 24px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-bottom-color: #304FFE;
+        }
+
+        .input-field::placeholder {
+            color: #999;
+        }
+
+        .keyboard-suggestions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .suggestion {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .floating-audio-button {
+            position: absolute;
+            bottom: 80px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #1DE9B6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: all 0.2s;
+        }
+
+        .floating-audio-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+        /* Typography */
+        .headline { font-size: 24px; font-weight: 400; }
+        .title { font-size: 20px; font-weight: 500; }
+        .subheader { font-size: 16px; font-weight: 400; }
+        .body-2 { font-size: 14px; font-weight: 500; }
+        .body-1 { font-size: 14px; font-weight: 400; }
+        .caption { font-size: 12px; font-weight: 400; }
+        .button-text { font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+    <div class="prototype-container">
+        
+        <!-- Screen 1: Intro -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">1. Intro Screen</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="intro-screen">
+                <div class="seva-logo">
+                    <img src="/mnt/user-data/uploads/logo.png" alt="SEVA">
+                </div>
+                <div class="intro-tagline">Connecting users to<br>sanitation service.</div>
+                <button class="button-primary">GET STARTED</button>
+                <button class="button-secondary">LOG IN</button>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/home.png" alt="Home"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/recent.png" alt="Recent"></div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Language Choice (Audio) -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">2. Audio Language Selection</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Set audio language 🔊
+            </div>
+            <div class="content">
+                <div class="language-screen">
+                    <div class="language-header">
+                        <h2>What language do you want to hear aloud for help?</h2>
+                    </div>
+                    <div class="language-grid">
+                        <button class="language-tile selected">
+                            <div class="language-native">हिन्दी</div>
+                            <div class="language-english">Hindi</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">English</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">বাংলা</div>
+                            <div class="language-english">Bengali</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">తెలుగు</div>
+                            <div class="language-english">Telugu</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">मराठी</div>
+                            <div class="language-english">Marathi</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">தமிழ்</div>
+                            <div class="language-english">Tamil</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">اردو</div>
+                            <div class="language-english">Urdu</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">ಕನ್ನಡ</div>
+                            <div class="language-english">Kannada</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">ગુજરાતી</div>
+                            <div class="language-english">Gujarati</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">ଓଡ଼ିଆ</div>
+                            <div class="language-english">Odia</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">മലയാളം</div>
+                            <div class="language-english">Malayalam</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">संस्कृतम्</div>
+                            <div class="language-english">Sanskrit</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Audio Confirmation -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">3. Confirm Audio Language</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Set audio language
+            </div>
+            <div class="content">
+                <div class="language-screen">
+                    <div class="language-grid" style="opacity: 0.3; pointer-events: none;">
+                        <button class="language-tile">
+                            <div class="language-native">हिन्दी</div>
+                            <div class="language-english">Hindi</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">English</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">বাংলা</div>
+                            <div class="language-english">Bengali</div>
+                        </button>
+                    </div>
+                </div>
+                <div class="confirmation-overlay">
+                    <div class="confirmation-card">
+                        <div class="confirmation-title">
+                            <span>हिन्दी - Hindi 🔊</span>
+                        </div>
+                        <div class="confirmation-text">
+                            ऑडियो भाषा के रूप में "हिन्दी" की पसंद की पुष्टि करना जारी रखें<br><br>
+                            Continue to confirm choice of "Hindi" as the audio language.
+                        </div>
+                        <div class="confirmation-buttons">
+                            <button class="icon-button decline">✕</button>
+                            <button class="icon-button accept">✓</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 4: Audio Test -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">4. Test Audio</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Test audio language 🔊
+            </div>
+            <div class="content">
+                <div class="audio-test-screen">
+                    <div class="audio-instruction">
+                        आप देख रहे पाठ के अनुवाद सुनने के लिए ऑडियो बटन दबाएं।<br><br>
+                        Press the audio button to hear translations of the text you see.
+                    </div>
+                    <div class="audio-button-container">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                        <button class="audio-button-main">🔊</button>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 5: Written Language Selection -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">5. Written Language Selection</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Set written language
+            </div>
+            <div class="content">
+                <div class="language-screen">
+                    <div class="language-header">
+                        <h2>What language do you want to read?</h2>
+                    </div>
+                    <div class="language-grid">
+                        <button class="language-tile">
+                            <div class="language-native">हिन्दी</div>
+                            <div class="language-english">Hindi</div>
+                        </button>
+                        <button class="language-tile selected">
+                            <div class="language-native">English</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">বাংলা</div>
+                            <div class="language-english">Bengali</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">తెలుగు</div>
+                            <div class="language-english">Telugu</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">मराठी</div>
+                            <div class="language-english">Marathi</div>
+                        </button>
+                        <button class="language-tile">
+                            <div class="language-native">தமிழ்</div>
+                            <div class="language-english">Tamil</div>
+                        </button>
+                    </div>
+                </div>
+                <button class="floating-audio-button">🔊</button>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 6: How Seva Works 1 -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">6. How It Works (Step 1)</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                How Seva works
+            </div>
+            <div class="content">
+                <div class="how-it-works-screen">
+                    <div class="how-it-works-text">
+                        <strong>Welcome to the Seva app!</strong><br><br>
+                        1. Our sensors tell technicians something is wrong.
+                    </div>
+                    <div class="diagram-container">
+                        <img src="/mnt/user-data/uploads/Screen_Shot_2017-09-20_at_4_37_48_PM.png" alt="Sensor diagram" style="max-height: 300px;">
+                    </div>
+                    <div class="pagination-dots">
+                        <div class="dot active"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 7: How Seva Works 2 -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">7. How It Works (Step 2)</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                How Seva works
+            </div>
+            <div class="content">
+                <div class="how-it-works-screen">
+                    <div class="how-it-works-text">
+                        2. Our app guides you step by step through the repair process.
+                    </div>
+                    <div class="diagram-container">
+                        <img src="/mnt/user-data/uploads/Screen_Shot_2017-09-26_at_2_50_13_PM.png" alt="Tools diagram" style="max-height: 300px;">
+                    </div>
+                    <div class="pagination-dots">
+                        <div class="dot"></div>
+                        <div class="dot active"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 8: How Seva Works 3 -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">8. How It Works (Step 3)</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="app-bar">
+                <div class="menu-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                How Seva works
+            </div>
+            <div class="content">
+                <div class="how-it-works-screen">
+                    <div class="how-it-works-text">
+                        3. Once you have completed the repair, our sensors confirm that everything is fixed and working.
+                    </div>
+                    <div class="diagram-container">
+                        <img src="/mnt/user-data/uploads/Screen_Shot_2017-09-26_at_2_52_23_PM.png" alt="Confirmation diagram" style="max-height: 300px;">
+                    </div>
+                    <div class="pagination-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot active"></div>
+                    </div>
+                    <button class="button-primary">OK, LET'S GET STARTED!</button>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+        <!-- Screen 9: Login -->
+        <div class="phone-frame" style="position: relative;">
+            <span class="screen-label">9. Login</span>
+            <div class="status-bar">
+                <span>12:30</span>
+            </div>
+            <div class="login-screen">
+                <div class="login-header">
+                    <div class="seva-logo">
+                        <img src="/mnt/user-data/uploads/logo.png" alt="SEVA" style="width: 160px;">
+                    </div>
+                </div>
+                <div class="login-form">
+                    <input type="text" class="input-field" placeholder="user name">
+                    <input type="password" class="input-field" placeholder="password">
+                    <div class="keyboard-suggestions">
+                        <div class="suggestion">suggestion</div>
+                        <div class="suggestion">suggestion</div>
+                        <div class="suggestion">suggestion</div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-bar">
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+                <div class="nav-icon"><img src="/mnt/user-data/uploads/back.png" alt="Back"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.language-tile').forEach(tile => {
+            tile.addEventListener('click', function() {
+                this.closest('.language-grid').querySelectorAll('.language-tile').forEach(t => t.classList.remove('selected'));
+                this.classList.add('selected');
+            });
+        });
+
+        document.querySelectorAll('.audio-button-main, .floating-audio-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
